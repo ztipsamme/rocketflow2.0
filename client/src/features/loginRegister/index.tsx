@@ -1,9 +1,14 @@
-import { useState } from 'react'
-import { useAuthStore } from '../../store/authStore'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, registerSchema } from './utils/validation'
 import axios from 'axios'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useAuthStore } from '../../store/authStore'
+import { loginSchema, registerSchema } from './utils/validation'
+import type { z } from 'zod'
+
+type RegisterFormData = z.infer<typeof registerSchema>
+type LoginFormData = z.infer<typeof loginSchema>
+type FormData = RegisterFormData | LoginFormData
 
 const LoginRegister = () => {
   const [isRegister, setIsRegister] = useState(false)
@@ -13,11 +18,11 @@ const LoginRegister = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     resolver: zodResolver(isRegister ? registerSchema : loginSchema),
   })
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormData) => {
     try {
       const url = isRegister ? '/api/auth/register' : '/api/auth/login'
       const res = await axios.post(url, data)
@@ -29,7 +34,7 @@ const LoginRegister = () => {
         alert('Registreringen lyckades! Logga in nu')
         setIsRegister(false)
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(error.response?.data?.error || 'Något gick fel')
     }
   }
@@ -52,7 +57,11 @@ const LoginRegister = () => {
               type="text"
               {...register('confirmPassword')}
             />
-            <p>{errors.confirmPassword?.message}</p>
+            <p>
+              {'confirmPassword' in errors
+                ? errors.confirmPassword?.message
+                : ''}
+            </p>
           </>
         )}
         <button type="submit">{isRegister ? 'Registrera' : 'Logga in'}</button>

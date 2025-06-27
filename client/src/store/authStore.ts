@@ -1,8 +1,14 @@
 import { create } from 'zustand'
 
-export const useAuthStore = create((set) => ({
+type AuthState = {
+  token: string | null
+  setToken: (token: string) => void
+  clearToken: () => void
+  isLoggedIn: (token: string) => boolean
+}
+export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   setToken: (token: string) => set({ token }),
   clearToken: () => set({ token: null }),
-  isLoggedIn: () => Boolean(token),
+  isLoggedIn: (token: string) => Boolean(token),
 }))
