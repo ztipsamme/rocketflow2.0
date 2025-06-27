@@ -7,7 +7,23 @@ const authRoutes = require('./routes/authRoutes')
 dotenv.config()
 const app = express()
 
-app.use(cors({ origin: 'http://localhost:5173' }))
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://rocketflow2-0.vercel.app',
+]
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORSE'))
+      }
+    },
+    credentials: true,
+  })
+)
 
 app.use(express.json())
 app.use('/api/auth', authRoutes)

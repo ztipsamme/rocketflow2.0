@@ -24,7 +24,9 @@ const LoginRegister = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const url = isRegister ? '/api/auth/register' : '/api/auth/login'
+      const base = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE
+      const url = `${base}/api/auth${isRegister ? '/register' : '/login'}`
+
       const res = await axios.post(url, data)
 
       if (!isRegister) {
