@@ -31,13 +31,13 @@ const LoginRegister = () => {
 
       if (!isRegister) {
         setToken(res.data.token)
-        alert('Inloggade')
+        console.log('Inloggade')
       } else {
-        alert('Registreringen lyckades! Logga in nu')
+        console.log('Registreringen lyckades! Logga in nu')
         setIsRegister(false)
       }
     } catch (error: any) {
-      alert(error.response?.data?.error || 'Något gick fel')
+      console.log(error.response?.data?.error || 'Något gick fel')
     }
   }
 
